@@ -65,7 +65,7 @@
         </activity>
         <activity
             android:name=".ui.EmulationActivity"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|navigationHidden"
             android:launchMode="singleTop"
             android:exported="true"
             android:theme="@style/EmulationTheme" />
