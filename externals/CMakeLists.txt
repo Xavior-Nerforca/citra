@@ -58,7 +58,11 @@ add_subdirectory(open_source_archives)
 add_subdirectory(minilzo)
 
 # SoundTouch
+# Citra's audio pipeline uses 16-bit signed samples, so build SoundTouch in integer mode.
+set(INTEGER_SAMPLES ON CACHE BOOL "Use integer samples in SoundTouch" FORCE)
 add_subdirectory(soundtouch)
+# The sample type is defined in the public SoundTouch headers and must match consumers.
+target_compile_definitions(SoundTouch PUBLIC SOUNDTOUCH_INTEGER_SAMPLES)
 # The SoundTouch target doesn't export the necessary include paths as properties by default
 target_include_directories(SoundTouch INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/soundtouch/include>)
 
