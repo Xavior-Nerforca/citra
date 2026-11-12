@@ -346,7 +346,7 @@ public final class CitraDirectory {
                 if ("background.glsl".equals(entry.getName())) {
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
                     copyFile(zipIn, output);
-                    NativeLibrary.SetBackgroundGLSL(output.toString());
+                    // Background GLSL injection is not exposed by the current native library.
                     continue;
                 }
                 // buttons and background images
