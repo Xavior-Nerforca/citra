@@ -454,7 +454,7 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_Run(JNIEnv* env, jclass 
     Settings::values.hw_gs_mode = Config::Get(Config::HW_GS_MODE);
     Settings::values.use_gles = Config::Get(Config::USE_GLES);
     Settings::values.show_fps = Config::Get(Config::SHOW_FPS);
-    Settings::values.use_hw_renderer = Config::Get(Config::USE_HW_RENDERER);
+    Settings::values.use_hw_renderer = true;
     Settings::values.use_hw_shader = Config::Get(Config::USE_HW_SHADER);
     Settings::values.use_shader_jit = Config::Get(Config::USE_SHADER_JIT);
     Settings::values.shaders_accurate_mul = Config::Get(Config::SHADERS_ACCURATE_MUL);
@@ -469,12 +469,12 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_Run(JNIEnv* env, jclass 
     Settings::values.enable_dsp_lle = Config::Get(Config::ENABLE_DSP_LLE);
     Settings::values.dsp_lle_multithread = Config::Get(Config::DSP_LLE_MULTITHREAD);
     Settings::values.audio_volume = Config::Get(Config::AUDIO_VOLUME);
-    Settings::values.sink_id = Config::Get(Config::AUDIO_ENGINE);
-    Settings::values.audio_device_id = Config::Get(Config::AUDIO_DEVICE);
+    Settings::values.sink_id = "auto";
+    Settings::values.audio_device_id = Config::Get(Config::AUDIO_OUTPUT_DEVICE);
     Settings::values.enable_audio_stretching = Config::Get(Config::AUDIO_STRETCHING);
     // mic
-    Settings::values.mic_input_type = Config::Get(Config::MIC_INPUT_TYPE);
-    Settings::values.mic_input_device = Config::Get(Config::MIC_INPUT_DEVICE);
+    Settings::values.mic_input_type = static_cast<Settings::MicInputType>(Config::Get(Config::AUDIO_INPUT_TYPE));
+    Settings::values.mic_input_device = Config::Get(Config::AUDIO_INPUT_DEVICE);
     // debug
     Settings::values.shadow_rendering = Config::Get(Config::SHADOW_RENDERING);
     Settings::values.use_present_thread = Config::Get(Config::USE_PRESENT_THREAD);
@@ -493,7 +493,7 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_Run(JNIEnv* env, jclass 
     Settings::SetLLEModules(Config::Get(Config::LLE_MODULES));
     // custom layout
     Settings::values.swap_screen = false;
-    Settings::values.custom_layout = Config::Get(Config::USE_CUSTOM_LAYOUT);
+    Settings::values.custom_layout = NativeLibrary::IsPortrait() ? Config::Get(Config::PORTRAIT_CUSTOM_LAYOUT) : Config::Get(Config::LANDSCAPE_CUSTOM_LAYOUT);
     UpdateDisplayRotation();
     //
     Settings::values.init_clock = Settings::InitClock::SystemTime;
@@ -633,7 +633,11 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_setRunningSettings(JNIEn
 
     // Custom Layout
     Settings::values.custom_layout = settings[i++] > 0;
-    Config::Set(Config::USE_CUSTOM_LAYOUT, Settings::values.custom_layout);
+    if (NativeLibrary::IsPortrait()) {
+        Config::Set(Config::PORTRAIT_CUSTOM_LAYOUT, Settings::values.custom_layout);
+    } else {
+        Config::Set(Config::LANDSCAPE_CUSTOM_LAYOUT, Settings::values.custom_layout);
+    }
 
     // Frame Limit
     Settings::values.frame_limit = std::max(settings[i++], 1);
