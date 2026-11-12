@@ -208,10 +208,22 @@ public final class EmulationActivity extends AppCompatActivity {
             return super.dispatchKeyEvent(event);
         }
 
+        boolean isController = input != null &&
+                (((input.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
+                 ((input.getSources() & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK));
+
         if (input != null && NativeLibrary.KeyEvent(button, action)) {
             return true;
-        } else
-            return super.dispatchKeyEvent(event);
+        }
+
+        // Do not let unmapped controller keys (notably BACK) fall through to Android.
+        // Some Bluetooth controllers emit these keys when they connect, which can
+        // otherwise trigger onBackPressed() and close the running game.
+        if (isController) {
+            return true;
+        }
+
+        return super.dispatchKeyEvent(event);
     }
 
     @Override
