@@ -41,12 +41,11 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
           path = Path("externals/boost/boost/container_hash/hash.hpp")
           source = path.read_text()
-          old = """#else
-          template <typename T> struct hash_base : std::unary_function<T, std::size_t> {};
-          #endif"""
-          new = """#else
+          pattern = r"#else\\s+template <typename T> struct hash_base : std::unary_function<T, std::size_t> \\{\\};\\s+#endif"
+          replacement = """#else
           template <typename T>
           struct hash_base
           {
@@ -54,9 +53,10 @@ jobs:
               typedef std::size_t result_type;
           };
           #endif"""
-          if old not in source:
-              raise SystemExit("Expected Boost hash_base compatibility block was not found")
-          path.write_text(source.replace(old, new, 1))
+          patched, count = re.subn(pattern, lambda _: replacement, source, count=1)
+          if count != 1:
+              raise SystemExit("Could not locate legacy Boost unary_function declaration")
+          path.write_text(patched)
           PY
 
       - name: Build debug APK
