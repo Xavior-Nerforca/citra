@@ -451,7 +451,7 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_Run(JNIEnv* env, jclass 
     Settings::values.accurate_rcp_rsq = false;
     Settings::values.skip_load_buffer = false;
     Settings::values.merge_framebuffer = false;
-    Settings::values.use_hw_gs = Config::Get(Config::USE_HW_GS);
+    Settings::values.hw_gs_mode = Config::Get(Config::HW_GS_MODE);
     Settings::values.use_gles = Config::Get(Config::USE_GLES);
     Settings::values.show_fps = Config::Get(Config::SHOW_FPS);
     Settings::values.use_hw_renderer = Config::Get(Config::USE_HW_RENDERER);
@@ -467,8 +467,8 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_Run(JNIEnv* env, jclass 
     Settings::values.remote_shader_host = Config::Get(Config::REMOTE_SHADER_HOST);
     // audio
     Settings::values.enable_dsp_lle = Config::Get(Config::ENABLE_DSP_LLE);
-    Settings::values.enable_dsp_lle_multithread = Config::Get(Config::DSP_LLE_MULTITHREAD);
-    Settings::values.volume = Config::Get(Config::AUDIO_VOLUME);
+    Settings::values.dsp_lle_multithread = Config::Get(Config::DSP_LLE_MULTITHREAD);
+    Settings::values.audio_volume = Config::Get(Config::AUDIO_VOLUME);
     Settings::values.sink_id = Config::Get(Config::AUDIO_ENGINE);
     Settings::values.audio_device_id = Config::Get(Config::AUDIO_DEVICE);
     Settings::values.enable_audio_stretching = Config::Get(Config::AUDIO_STRETCHING);
@@ -504,7 +504,6 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_Run(JNIEnv* env, jclass 
     Settings::values.skip_cpu_write = false;
     Settings::values.skip_texture_copy = false;
     Settings::values.disable_clip_coef = false;
-    Settings::values.y2r_perform_hack = false;
     Settings::values.y2r_event_delay = false;
     Settings::values.force_texture_filter = 0;
     Settings::values.stream_buffer_hack = !Settings::values.use_present_thread;
