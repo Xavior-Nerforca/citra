@@ -35,7 +35,7 @@ jobs:
       - name: Install Android build components
         run: |
           yes | sdkmanager --licenses
-          sdkmanager "platforms;android-31" "build-tools;31.0.0" "cmake;3.31.6" "ndk;29.0.14206865"
+          sdkmanager "platforms;android-31" "build-tools;31.0.0" "cmake;3.31.6" "ndk;26.3.11579264"
 
       - name: Build debug APK
         working-directory: src/android
