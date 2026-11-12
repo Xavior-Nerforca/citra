@@ -41,22 +41,35 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
+
           path = Path("externals/boost/boost/container_hash/hash.hpp")
           source = path.read_text()
-          pattern = r"#else\s+template <typename T> struct hash_base : std::unary_function<T, std::size_t> \{\};\s+#endif"
-          replacement = """#else
-          template <typename T>
-          struct hash_base
-          {
-              typedef T argument_type;
-              typedef std::size_t result_type;
-          };
-          #endif"""
-          patched, count = re.subn(pattern, lambda _: replacement, source, count=1)
-          if count != 1:
-              raise SystemExit("Could not locate legacy Boost unary_function declaration")
-          path.write_text(patched)
+          target = "struct hash_base : std::unary_function<T, std::size_t> {};"
+          if source.count(target) != 1:
+              raise SystemExit("Expected exactly one legacy Boost unary_function declaration")
+
+          index = source.index(target)
+          line_start = source.rfind("\n", 0, index) + 1
+          template_start = source.rfind("\n", 0, line_start - 1) + 1
+          line_end = source.find("\n", index)
+          if line_end < 0:
+              line_end = len(source)
+
+          indent = source[line_start:index]
+          previous_line = source[template_start:line_start].strip()
+          if previous_line != "template <typename T>":
+              raise SystemExit("Unexpected Boost hash_base template declaration")
+
+          replacement = (
+              indent + "template <typename T>\n"
+              + indent + "struct hash_base\n"
+              + indent + "{\n"
+              + indent + "    typedef T argument_type;\n"
+              + indent + "    typedef std::size_t result_type;\n"
+              + indent + "};"
+          )
+          source = source[:template_start] + replacement + source[line_end:]
+          path.write_text(source)
           PY
 
       - name: Build debug APK
