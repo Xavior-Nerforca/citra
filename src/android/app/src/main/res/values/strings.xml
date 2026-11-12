@@ -55,6 +55,10 @@
     <string name="combo_key_1">Combo Key 1</string>
     <string name="combo_key_2">Combo Key 2</string>
     <string name="combo_key_3">Combo Key 3</string>
+    <string name="combo_key_name">Combo Key %1$d</string>
+    <string name="translate_settings">Screen Translation</string>
+    <string name="baidu_ocr_key">Baidu OCR API Key</string>
+    <string name="baidu_ocr_secret">Baidu OCR Secret Key</string>
     <string name="multiplayer">Multiplayer</string>
     <string name="multiplayer_room_title">Room: %1$s</string>
     <string name="multiplayer_console_id">Console ID：%1$s</string>
