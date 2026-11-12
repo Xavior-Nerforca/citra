@@ -53,7 +53,7 @@ RasterizerOpenGL::RasterizerOpenGL()
 
     AllowShadow = (GLAD_GL_ARB_shader_image_load_store && GLAD_GL_ARB_shader_image_size &&
                    GLAD_GL_ARB_framebuffer_no_attachments) ||
-                  Settings::values.allow_shadow;
+                  Settings::values.shadow_rendering;
 
     // Clipping plane 0 is always enabled for PICA fixed clip plane z <= 0
     state.clip_distance[0] = true;
