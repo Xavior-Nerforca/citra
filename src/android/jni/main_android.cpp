@@ -469,11 +469,14 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_Run(JNIEnv* env, jclass 
     Settings::values.enable_dsp_lle = Config::Get(Config::ENABLE_DSP_LLE);
     Settings::values.dsp_lle_multithread = Config::Get(Config::DSP_LLE_MULTITHREAD);
     Settings::values.audio_volume = Config::Get(Config::AUDIO_VOLUME);
-    Settings::values.sink_id = "auto";
+    Settings::values.sink_id = Config::Get(Config::AUDIO_OUTPUT_TYPE) == 1 ? "null" : "auto";
     Settings::values.audio_device_id = Config::Get(Config::AUDIO_OUTPUT_DEVICE);
     Settings::values.enable_audio_stretching = Config::Get(Config::AUDIO_STRETCHING);
     // mic
-    Settings::values.mic_input_type = static_cast<Settings::MicInputType>(Config::Get(Config::AUDIO_INPUT_TYPE));
+    const u8 mic_input_type = Config::Get(Config::AUDIO_INPUT_TYPE);
+    Settings::values.mic_input_type =
+        mic_input_type == 3 ? Settings::MicInputType::Real :
+        mic_input_type == 2 ? Settings::MicInputType::Static : Settings::MicInputType::None;
     Settings::values.mic_input_device = Config::Get(Config::AUDIO_INPUT_DEVICE);
     // debug
     Settings::values.shadow_rendering = Config::Get(Config::SHADOW_RENDERING);
