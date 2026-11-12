@@ -37,6 +37,22 @@ jobs:
           yes | sdkmanager --licenses
           sdkmanager "platforms;android-31" "build-tools;31.0.0" "cmake;3.31.6" "ndk;26.3.11579264"
 
+      - name: Patch legacy Boost hash compatibility
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("externals/boost/boost/container_hash/hash.hpp")
+          source = path.read_text()
+          old = "template <typename T> struct hash_base : std::unary_function<T, std::size_t> {}; "
+          new = "template <typename T> struct hash_base { typedef T argument_type; typedef std::size_t result_type; }; "
+          if old not in source:
+              old = "template <typename T> struct hash_base : std::unary_function<T, std::size_t> {};"
+              new = "template <typename T> struct hash_base { typedef T argument_type; typedef std::size_t result_type; };"
+          if old not in source:
+              raise SystemExit("Expected legacy Boost hash_base declaration was not found")
+          path.write_text(source.replace(old, new, 1))
+          PY
+
       - name: Build debug APK
         working-directory: src/android
         run: |
