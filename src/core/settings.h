@@ -211,6 +211,9 @@ struct Values {
     bool async_shader_compile;
     bool use_separable_shader;
     bool shadow_rendering;
+    // Legacy renderer compatibility toggles.
+    bool display_transfer_hack;
+    bool use_linear_filter;
     bool use_shader_cache;
     bool skip_slow_draw;
     bool skip_cpu_write;
