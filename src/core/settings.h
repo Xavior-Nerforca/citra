@@ -183,6 +183,7 @@ struct Values {
     std::string pp_shader_name;
 
     bool custom_textures;
+    bool preload_textures;
 
     // Audio
     bool enable_dsp_lle;
@@ -223,6 +224,7 @@ struct Values {
     bool disable_clip_coef;
     bool stream_buffer_hack;
     bool y2r_event_delay;
+    bool y2r_perform_hack;
     bool use_present_thread;
     bool use_direct_display;
     bool use_fence_sync;
