@@ -44,7 +44,7 @@ jobs:
           import re
           path = Path("externals/boost/boost/container_hash/hash.hpp")
           source = path.read_text()
-          pattern = r"#else\\s+template <typename T> struct hash_base : std::unary_function<T, std::size_t> \\{\\};\\s+#endif"
+          pattern = r"#else\s+template <typename T> struct hash_base : std::unary_function<T, std::size_t> \{\};\s+#endif"
           replacement = """#else
           template <typename T>
           struct hash_base
