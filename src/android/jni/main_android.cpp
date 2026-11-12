@@ -146,13 +146,13 @@ void BootGame(const std::string& path) {
             }
         } else {
             // Ensure no audio bleeds out while game is paused
-            const float volume = Settings::values.volume;
-            Settings::values.volume = 0;
+            const float volume = Settings::values.audio_volume;
+            Settings::values.audio_volume = 0;
 
             std::unique_lock lock{s_running_mutex};
             s_running_cv.wait(lock, [] { return s_is_running || s_stop_running; });
             s_render_window->PollEvents();
-            Settings::values.volume = volume;
+            Settings::values.audio_volume = volume;
         }
     }
 
@@ -565,7 +565,7 @@ JNIEXPORT jintArray JNICALL Java_org_citra_emu_NativeLibrary_getRunningSettings(
     settings[i++] = Settings::values.skip_cpu_write;
     settings[i++] = Settings::values.skip_texture_copy;
     settings[i++] = Settings::values.force_texture_filter;
-    settings[i++] = Settings::values.use_hw_gs;
+    settings[i++] = Settings::values.hw_gs_mode != 0;
     settings[i++] = Settings::values.shadow_rendering;
     settings[i++] = Settings::values.async_shader_compile;
     settings[i++] = std::min(std::max(Settings::values.resolution_factor - 1, 0), 3);
@@ -604,8 +604,8 @@ JNIEXPORT void JNICALL Java_org_citra_emu_NativeLibrary_setRunningSettings(JNIEn
     Config::Set(Config::FORCE_TEXTURE_FILTER, Settings::values.force_texture_filter);
 
     // Use HW GS
-    Settings::values.use_hw_gs = settings[i++] > 0;
-    Config::Set(Config::USE_HW_GS, Settings::values.use_hw_gs);
+    Settings::values.hw_gs_mode = settings[i++] > 0 ? Config::HW_GS_MODE.default_value : 0;
+    Config::Set(Config::HW_GS_MODE, Settings::values.hw_gs_mode);
 
     // Shadow Rendering
     Settings::values.shadow_rendering = settings[i++] > 0;
