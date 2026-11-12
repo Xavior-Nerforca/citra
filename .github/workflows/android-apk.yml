@@ -70,6 +70,23 @@ jobs:
           )
           source = source[:template_start] + replacement + source[line_end:]
           path.write_text(source)
+
+          # Boost.Asio in this submodule still imports std::result_of, which
+          # libc++ removes in C++20. Use the supported std::invoke_result path.
+          asio_path = Path("externals/boost/boost/asio/detail/type_traits.hpp")
+          asio_source = asio_path.read_text()
+          config_include = "#include <boost/asio/detail/config.hpp>\n"
+          define = (
+              "#if defined(BOOST_ASIO_HAS_STD_TYPE_TRAITS) && "
+              "!defined(BOOST_ASIO_HAS_STD_INVOKE_RESULT)\n"
+              "#define BOOST_ASIO_HAS_STD_INVOKE_RESULT 1\n"
+              "#endif\n"
+          )
+          if define not in asio_source:
+              if asio_source.count(config_include) != 1:
+                  raise SystemExit("Unexpected Boost.Asio type_traits header")
+              asio_source = asio_source.replace(config_include, config_include + define, 1)
+              asio_path.write_text(asio_source)
           PY
 
       - name: Build debug APK
